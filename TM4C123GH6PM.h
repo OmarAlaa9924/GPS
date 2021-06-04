@@ -12714,10 +12714,26 @@
 //----------------------------------------------------------------
 //Masks
 //----------------------------------------------------------------
-#define RED       0x02
-#define BLUE      0x04
-#define GREEN     0x08
-#define PF123_mask             0x0E
-#define PF_mask                0x20
+#define RED          0x02
+#define BLUE         0x04
+#define GREEN        0x08
+#define PF123_mask   0x0E
+#define PF_mask      0x20
+#define PA    		   0x01
+#define PB  			   0X02
+#define PA2          0x04
+#define PA3          0X08
+#define PA4          0x10
+#define PA5          0x20
+#define PA6          0x40
+#define PA7          0x80
+#define PB2          0x04
+#define PB3          0X08
+#define PB4          0x10
+#define PB5          0x20 
+#define PB6          0x40
+#define PB7          0x80
+#define pinsA        0xFC 
+#define pinsB        0xFC 
 
 
