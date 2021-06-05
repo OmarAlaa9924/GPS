@@ -54,12 +54,11 @@ void calc()
     c = 2 * atan2(sqrt(a), sqrt(1 - a));
     distance = R * c;
 }
-
-
-void delay(int n){
+void delay(int n){	//Delay Function
 	int i,j;
 	for(i=0;i<n;i++){
 	for(j=0;j<n;j++){}}
+}
 }
 void writeLED(){			//Write data on LEDs
 	GPIO_PORTF_DATA_R &= ~PF123_mask;
