@@ -2,6 +2,7 @@
 #include <math.h>
 
 
+
 //Initialization function
 void Sys_init(){
 	SYSCTL_RCGCGPIO_R |= 0x20;							//Activate Port F Clock
@@ -15,14 +16,14 @@ void Sys_init(){
 	GPIO_PORTF_PCTL_R &= ~0x0000FFF0;				//PTCL GPIO on PF4-0
 	GPIO_PORTF_DATA_R &= ~PF123_mask;				//Init LEDs to be off
 	//***********************************************************************
-	
+
 	SYSCTL_RCGCGPIO_R |= PA;							//Activate Port A Clock
 	while((SYSCTL_RCGCGPIO_R&0x01)==0){};			//Wait for activation
   GPIO_PORTA_DIR_R |= pinsA;					//Set I/O
 	GPIO_PORTA_DEN_R |= pinsA;					//Enable Digital output
 	GPIO_PORTA_AMSEL_R &= ~pinsA;			//Disable analog
 	GPIO_PORTA_AFSEL_R &= ~pinsA;			//Disable Alternate Function
-	GPIO_PORTA_PCTL_R &= ~0xFFFFFF00;				//PTCL GPIO on PA
+	GPIO_PORTA_PCTL_R &= ~0xFFFFFF00;				//PTCL GPIO on PFA
 	GPIO_PORTA_DATA_R &= ~pinsA;	
 	//***********************************************************************
 	SYSCTL_RCGCGPIO_R |= PB;							//Activate Port B Clock
@@ -31,7 +32,7 @@ void Sys_init(){
 	GPIO_PORTB_DEN_R |= 0xE0;					//Enable Digital output
 	GPIO_PORTB_AMSEL_R &= ~0xE0;			//Disable analog
 	GPIO_PORTB_AFSEL_R &= ~0xE0;			//Disable Alternate Function
-	GPIO_PORTB_PCTL_R &= ~0xFFF00000;				//PTCL GPIO on PB7-5
+	GPIO_PORTB_PCTL_R &= ~0xFFF00000;				//PTCL GPIO on PFB
 	GPIO_PORTB_DATA_R &= ~0xE0;
 }
 //Declare Variables
@@ -53,128 +54,126 @@ void calc()
     distance = R * c;
 }
 
-//************************************************************************************************************************************************************************
-//this function is for delaying between the enabling signals for the seven segment display
+
 void delay(int n){
 	int i,j;
 	for(i=0;i<n;i++){
-	for(j=0;j<3180;j++){}}
+	for(j=0;j<n;j++){}}
 }
 void writeLED(){			//Write data on LEDs
 	GPIO_PORTF_DATA_R &= ~PF123_mask;
 	GPIO_PORTF_DATA_R |= RED;
 }
 
-//************************************************************************************************************************************************************************
-//this function is for displaying the result on the seven segment display
+
 void display(int hundreds,int tens,int ones){
 	while(1){
-		GPIO_PORTB_DATA_R &= 0X7F;   //these two statements for enabling the signal for the hundreds and disabling it for the tens and ones
-		GPIO_PORTB_DATA_R |= 0X60;
+		GPIO_PORTA_DATA_R &= 0X7F;
+		GPIO_PORTA_DATA_R |= 0X60;
 	switch(hundreds)
 	{
 		
 		case 1 :
-			      GPIO_PORTA_DATA_R = 0x30;
+			      GPIO_PORTB_DATA_R = 0x30;
 		        break;
 		case 2 :
-			      GPIO_PORTA_DATA_R = 0x6D;
+			      GPIO_PORTB_DATA_R = 0x6D;
 		        break;
 		case 3 :
-			      GPIO_PORTA_DATA_R = 0x79;
+			      GPIO_PORTB_DATA_R = 0x79;
 		        break;
 		case 4 :
-			      GPIO_PORTA_DATA_R = 0x33;
+			      GPIO_PORTB_DATA_R = 0x33;
 		        break;
 		case 5 :
-			      GPIO_PORTA_DATA_R = 0x5B;
+			      GPIO_PORTB_DATA_R = 0x5B;
 		        break;
 		case 6 :
-			      GPIO_PORTA_DATA_R = 0x5F;
+			      GPIO_PORTB_DATA_R = 0x5F;
 		        break;
 		case 7 :
-			      GPIO_PORTA_DATA_R = 0x70;
+			      GPIO_PORTB_DATA_R = 0x70;
 		        break;
 		case 8 :
-			      GPIO_PORTA_DATA_R = 0x7F ;
+			      GPIO_PORTB_DATA_R = 0x7F ;
 		        break;
 		case 9 :
-			      GPIO_PORTA_DATA_R = 0x7B;
+			      GPIO_PORTB_DATA_R = 0x7B;
 		        break;
 		default :
-			      GPIO_PORTA_DATA_R = 0x7E;
+			      GPIO_PORTB_DATA_R = 0x7E;
 		        break;	
 	}
-	delay(79);                    //between each enabling we make a delay so we can read the number
-	GPIO_PORTB_DATA_R &= 0XBF;    //these two statements for enabling the signal for the tens and disabling it for the hundreds and ones
-		GPIO_PORTB_DATA_R |= 0XA0;
+	delay(500);
+	GPIO_PORTA_DATA_R &= 0XBF;
+		GPIO_PORTA_DATA_R |= 0XA0;
 	switch(tens)
 	{
 		case 1 :
-			      GPIO_PORTA_DATA_R = 0x30;
+			      GPIO_PORTB_DATA_R = 0x30;
 		        break;
 		case 2 :
-			      GPIO_PORTA_DATA_R = 0x6D;
+			      GPIO_PORTB_DATA_R = 0x6D;
 		        break;
 		case 3 :
-			      GPIO_PORTA_DATA_R = 0x79;
+			      GPIO_PORTB_DATA_R = 0x79;
 		        break;
 		case 4 :
-			      GPIO_PORTA_DATA_R = 0x33;
+			      GPIO_PORTB_DATA_R = 0x33;
 		        break;
 		case 5 :
-			      GPIO_PORTA_DATA_R = 0x5B;
+			      GPIO_PORTB_DATA_R = 0x5B;
 		        break;
 		case 6 :
-			      GPIO_PORTA_DATA_R = 0x5F;
+			      GPIO_PORTB_DATA_R = 0x5F;
 		        break;
 		case 7 :
-			      GPIO_PORTA_DATA_R = 0x70;
+			      GPIO_PORTB_DATA_R = 0x70;
 		        break;
 		case 8 :
-			      GPIO_PORTA_DATA_R = 0x7F ;
+			      GPIO_PORTB_DATA_R = 0x7F ;
 		        break;
 		case 9 :
-			      GPIO_PORTA_DATA_R = 0x7B;
+			      GPIO_PORTB_DATA_R = 0x7B;
 		        break;
 		default :
-			      GPIO_PORTA_DATA_R = 0x7E;
+			      GPIO_PORTB_DATA_R = 0x7E;
 		        break;		
 	}
-	delay(79);                          
-	GPIO_PORTB_DATA_R &= 0XDF;          //these two statements for enabling the signal for the ones and disabling it for the hundrends and tens
-	GPIO_PORTB_DATA_R |= 0XC0;
+	delay(500);
+	GPIO_PORTA_DATA_R &= 0XDF;
+	GPIO_PORTA_DATA_R |= 0XC0;
 	switch(ones)
 	{
 		case 1 :
-			      GPIO_PORTA_DATA_R = 0x30;
+			      GPIO_PORTB_DATA_R = 0x30;
 		        break;
 		case 2 :
-			      GPIO_PORTA_DATA_R = 0x6D;
+			      GPIO_PORTB_DATA_R = 0x6D;
 		        break;
 		case 3 :
-			      GPIO_PORTA_DATA_R = 0x79;
+			      GPIO_PORTB_DATA_R = 0x79;
 		        break;
 		case 4 :
-			      GPIO_PORTA_DATA_R = 0x33;
+			      GPIO_PORTB_DATA_R = 0x33;
 		        break;
 		case 5 :
-			      GPIO_PORTA_DATA_R = 0x5B;
+			      GPIO_PORTB_DATA_R = 0x5B;
 		        break;
 		case 6 :
-			      GPIO_PORTA_DATA_R = 0x5F;
+			      GPIO_PORTB_DATA_R = 0x5F;
 		        break;
 		case 7 :
-			      GPIO_PORTA_DATA_R = 0x70;
+			      GPIO_PORTB_DATA_R = 0x70;
 		        break;
 		case 8 :
-			      GPIO_PORTA_DATA_R = 0x7F ;
+			      GPIO_PORTB_DATA_R = 0x7F ;
 		        break;
 		case 9 :
-			      GPIO_PORTA_DATA_R = 0x7B;
+			      GPIO_PORTB_DATA_R = 0x7B;
 		        break;
 		default :
-			      GPIO_PORTA_DATA_R = 0x7E;
+			      GPIO_PORTB_DATA_R = 0x7E;
 		        break;	
 	}
  }
@@ -192,7 +191,7 @@ int main(){
 		if(totaldistance>0.1) {
 				writeLED();
 			displayed_distance = (int) (totaldistance *1000);
-	     ones = displayed_distance%10;      //the following statements to get the hundreds and tens and ones from our result
+	     ones = displayed_distance%10;
 	     displayed_distance /= 10;
 	     tens= displayed_distance%10;
 	     displayed_distance/=10;
@@ -202,4 +201,5 @@ int main(){
 			}  
 			
 	}
+
 }
