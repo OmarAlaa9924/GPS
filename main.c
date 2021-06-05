@@ -4,41 +4,42 @@
 
 //Initialization function
 void Sys_init(){
-	SYSCTL_RCGCGPIO_R |= 0x20;				//Activate Port F Clock
+	SYSCTL_RCGCGPIO_R |= 0x20;							//Activate Port F Clock
 	while((SYSCTL_RCGCGPIO_R&0x20)==0);			//Wait for activation
 	GPIO_PORTF_LOCK_R = GPIO_LOCK_KEY;			//Unlock Port F
-	GPIO_PORTF_CR_R |= PF123_mask;				//Allow changes to PF4 to 0
-        GPIO_PORTF_DIR_R |= PF123_mask;				//Set I/O
-	GPIO_PORTF_DEN_R |= PF123_mask;				//Enable Digital output
+	GPIO_PORTF_CR_R |= PF123_mask;					//Allow changes to PF4 to 0
+  GPIO_PORTF_DIR_R |= PF123_mask;					//Set I/O
+	GPIO_PORTF_DEN_R |= PF123_mask;					//Enable Digital output
 	GPIO_PORTF_AMSEL_R &= ~PF123_mask;			//Disable analog
 	GPIO_PORTF_AFSEL_R &= ~PF123_mask;			//Disable Alternate Function
-	GPIO_PORTF_PCTL_R &= ~0x0000FFF0;			//PTCL GPIO on PF4-0
-	GPIO_PORTF_DATA_R &= ~PF123_mask;			//Init LEDs to be off
+	GPIO_PORTF_PCTL_R &= ~0x0000FFF0;				//PTCL GPIO on PF4-0
+	GPIO_PORTF_DATA_R &= ~PF123_mask;				//Init LEDs to be off
 	//***********************************************************************
 	
-	SYSCTL_RCGCGPIO_R |= PA;				//Activate Port A Clock
+	SYSCTL_RCGCGPIO_R |= PA;							//Activate Port A Clock
 	while((SYSCTL_RCGCGPIO_R&0x01)==0){};			//Wait for activation
-        GPIO_PORTA_DIR_R |= pinsA;			        //Set I/O
-	GPIO_PORTA_DEN_R |= pinsA;				//Enable Digital output
-	GPIO_PORTA_AMSEL_R &= ~pinsA;			        //Disable analog
-	GPIO_PORTA_AFSEL_R &= ~pinsA;			        //Disable Alternate Function
-	GPIO_PORTA_PCTL_R &= ~0xFFFFFF00;		        //PTCL GPIO on PFA
+  GPIO_PORTA_DIR_R |= pinsA;					//Set I/O
+	GPIO_PORTA_DEN_R |= pinsA;					//Enable Digital output
+	GPIO_PORTA_AMSEL_R &= ~pinsA;			//Disable analog
+	GPIO_PORTA_AFSEL_R &= ~pinsA;			//Disable Alternate Function
+	GPIO_PORTA_PCTL_R &= ~0xFFFFFF00;				//PTCL GPIO on PFA
 	GPIO_PORTA_DATA_R &= ~pinsA;	
 	//***********************************************************************
-	SYSCTL_RCGCGPIO_R |= PB;				//Activate Port B Clock
-	while((SYSCTL_RCGCGPIO_R&0x02)==0){};			//Wait for activation
-        GPIO_PORTB_DIR_R |= pinsB;			        //Set I/O
-	GPIO_PORTB_DEN_R |= pinsB;				//Enable Digital output
-	GPIO_PORTB_AMSEL_R &= ~pinsB;			        //Disable analog
-	GPIO_PORTB_AFSEL_R &= ~pinsB;			        //Disable Alternate Function
-	GPIO_PORTB_PCTL_R &= ~0xFFFFFF00;			//PTCL GPIO on PFB
-	GPIO_PORTB_DATA_R &= ~pinsB;
+	SYSCTL_RCGCGPIO_R |= PB;							//Activate Port B Clock
+	while((SYSCTL_RCGCGPIO_R&0x02)==0){};		//Wait for activation		
+  GPIO_PORTB_DIR_R |= 0xE0;					   //Set I/O
+	GPIO_PORTB_DEN_R |= 0xE0;					//Enable Digital output
+	GPIO_PORTB_AMSEL_R &= ~0xE0;			//Disable analog
+	GPIO_PORTB_AFSEL_R &= ~0xE0;			//Disable Alternate Function
+	GPIO_PORTB_PCTL_R &= ~0xFFF00000;				//PTCL GPIO on PFB
+	GPIO_PORTB_DATA_R &= ~0xE0;
 }
 //Declare Variables
 double totaldistance, distance,latHome, lonHome, latDest, lonDest,differenceLon, differenceLat, a, c, latHomeTmp, latDestTmp, t = 0;
 double pi = 3.141592653589793;
 double R = 6371; //Radius of the Earth
 int displayed_distance =0 ;
+int ones,tens,hundreds=0;
 void calc()
 {
     latHomeTmp = (pi / 180) * (latHome);
@@ -64,220 +65,139 @@ void writeLED(){			//Write data on LEDs
 }
 
 
-void display(int d){
-	int num1=0;
-	int num2=0;
-	int num3=0;
-	num3 = d%10;
-	d /= 10;
-	num2 = d%10;
-	d/=10;
-	num1 = d%10;
-	switch(num3)
+void display(int hundreds,int tens,int ones){
+	while(1){
+		GPIO_PORTB_DATA_R &= 0X7F;
+		GPIO_PORTB_DATA_R |= 0X60;
+	switch(hundreds)
 	{
+		
 		case 1 :
-		        GPIO_PORTB_DATA_R &= ~(PB4);
-		        GPIO_PORTB_DATA_R &= ~(PB5);
-		        GPIO_PORTB_DATA_R &= ~(PB6);
-		        GPIO_PORTB_DATA_R |= PB7;
+			      GPIO_PORTA_DATA_R = 0x30;
 		        break;
 		case 2 :
-			GPIO_PORTB_DATA_R &= ~(PB4);
-		        GPIO_PORTB_DATA_R &= ~(PB5);
-		        GPIO_PORTB_DATA_R |= PB6;
-		        GPIO_PORTB_DATA_R &= ~(PB7);
+			      GPIO_PORTA_DATA_R = 0x6D;
 		        break;
 		case 3 :
-			GPIO_PORTB_DATA_R &= ~(PB4);
-		        GPIO_PORTB_DATA_R &= ~(PB5);
-		        GPIO_PORTB_DATA_R |= PB6;
-		        GPIO_PORTB_DATA_R |= PB7;
+			      GPIO_PORTA_DATA_R = 0x79;
 		        break;
 		case 4 :
-		        GPIO_PORTB_DATA_R &= ~(PB4);
-		        GPIO_PORTB_DATA_R |=  PB5;
-		        GPIO_PORTB_DATA_R &= ~(PB6);
-		        GPIO_PORTB_DATA_R &= ~(PB7);
+			      GPIO_PORTA_DATA_R = 0x33;
 		        break;
 		case 5 :
-			GPIO_PORTB_DATA_R &= ~(PB4);
-		        GPIO_PORTB_DATA_R |=  PB5;
-		        GPIO_PORTB_DATA_R &= ~(PB6);
-		        GPIO_PORTB_DATA_R |=  PB7;
+			      GPIO_PORTA_DATA_R = 0x5B;
 		        break;
 		case 6 :
-			GPIO_PORTB_DATA_R &= ~(PB4);
-		        GPIO_PORTB_DATA_R |=  PB5;
-		        GPIO_PORTB_DATA_R |= PB6;
-		        GPIO_PORTB_DATA_R &= ~(PB7);
+			      GPIO_PORTA_DATA_R = 0x5F;
 		        break;
 		case 7 :
-			GPIO_PORTB_DATA_R &= ~(PB4);
-		        GPIO_PORTB_DATA_R |=  PB5;
-		        GPIO_PORTB_DATA_R |= PB6;
-		        GPIO_PORTB_DATA_R |= PB7;
+			      GPIO_PORTA_DATA_R = 0x70;
 		        break;
 		case 8 :
-			GPIO_PORTB_DATA_R |= PB4;
-		        GPIO_PORTB_DATA_R &= ~(PB5);
-		        GPIO_PORTB_DATA_R &= ~(PB6);
-		        GPIO_PORTB_DATA_R &= ~(PB7);
+			      GPIO_PORTA_DATA_R = 0x7F ;
 		        break;
 		case 9 :
-			GPIO_PORTB_DATA_R |= PB4;
-		        GPIO_PORTB_DATA_R &= ~(PB5);
-		        GPIO_PORTB_DATA_R &= ~(PB6);
-		        GPIO_PORTB_DATA_R |= PB7;
+			      GPIO_PORTA_DATA_R = 0x7B;
 		        break;
 		default :
-			GPIO_PORTB_DATA_R &= ~(PB4);
-		        GPIO_PORTB_DATA_R &= ~(PB5);
-		        GPIO_PORTB_DATA_R &= ~(PB6);
-		        GPIO_PORTB_DATA_R &= ~(PB7);
+			      GPIO_PORTA_DATA_R = 0x7E;
 		        break;	
 	}
-	switch(num2)
+	delay(79);
+	GPIO_PORTB_DATA_R &= 0XBF;
+		GPIO_PORTB_DATA_R |= 0XA0;
+	switch(tens)
 	{
 		case 1 :
-			GPIO_PORTA_DATA_R &= ~(PA6);       //b3=0
-		        GPIO_PORTA_DATA_R &= ~(PA7);       //b2=0
-		        GPIO_PORTB_DATA_R &= ~(PB2);       //b1=0
-		        GPIO_PORTB_DATA_R |= PB3;          //b0=1         binary output 0001   (All the outputs are the same in each switch case)
+			      GPIO_PORTA_DATA_R = 0x30;
 		        break;
 		case 2 :
-			GPIO_PORTA_DATA_R &= ~(PA6);       //b3 =0
-		        GPIO_PORTA_DATA_R &= ~(PA7);       //b2=0
-		        GPIO_PORTB_DATA_R |= PB2;          //b1=1
-		        GPIO_PORTB_DATA_R &= ~(PB3);       //b0=0         binary output 0010
+			      GPIO_PORTA_DATA_R = 0x6D;
 		        break;
 		case 3 :
-			GPIO_PORTA_DATA_R &= ~(PA6);       //b3=0
-		        GPIO_PORTA_DATA_R &= ~(PA7);       //b2=0
-		        GPIO_PORTB_DATA_R |= PB2;          //b1=1
-		        GPIO_PORTB_DATA_R |= PB3;          //b0=1         binary output 0011
+			      GPIO_PORTA_DATA_R = 0x79;
 		        break;
 		case 4 :
-			GPIO_PORTA_DATA_R &= ~(PA6);       //b3=0
-		        GPIO_PORTA_DATA_R |=  PA7;         //b2=1
-		        GPIO_PORTB_DATA_R &= ~(PB2);       //b1=0
-		        GPIO_PORTB_DATA_R &= ~(PB3);       //b0=0         binary output 0100
+			      GPIO_PORTA_DATA_R = 0x33;
 		        break;
 		case 5 :
-			GPIO_PORTA_DATA_R &= ~(PA6);       //b3=0
-		        GPIO_PORTA_DATA_R |=  PA7;         //b2=1
-		        GPIO_PORTB_DATA_R &= ~(PB2);       //b1=0
-		        GPIO_PORTB_DATA_R |=  PB3;         //b0=1         binary output 0101
+			      GPIO_PORTA_DATA_R = 0x5B;
 		        break;
 		case 6 :
-			GPIO_PORTA_DATA_R &= ~(PA6);       //b3=0
-		        GPIO_PORTA_DATA_R |=  PA7;         //b2=1
-		        GPIO_PORTB_DATA_R |= PB2;          //b1=1
-		        GPIO_PORTB_DATA_R &= ~(PB3);       //b0=0         binary output 0110
+			      GPIO_PORTA_DATA_R = 0x5F;
 		        break;
 		case 7 :
-			GPIO_PORTA_DATA_R &= ~(PA6);       //b3=0
-		        GPIO_PORTA_DATA_R |=  PA7;         //b2=1
-		        GPIO_PORTB_DATA_R |= PB2;          //b1=1
-		        GPIO_PORTB_DATA_R |= PB3;          //b0=1         binary output 0111
+			      GPIO_PORTA_DATA_R = 0x70;
 		        break;
 		case 8 :
-			GPIO_PORTA_DATA_R |= PA6;          //b3=1
-		        GPIO_PORTA_DATA_R &= ~(PA7);       //b2=0
-		        GPIO_PORTB_DATA_R &= ~(PB2);       //b1=0
-		        GPIO_PORTB_DATA_R &= ~(PB3);       //b0=0         binary output 1000
+			      GPIO_PORTA_DATA_R = 0x7F ;
 		        break;
 		case 9 :
-			GPIO_PORTA_DATA_R |= PA6;          //b3=1
-		        GPIO_PORTA_DATA_R &= ~(PA7);       //b2=0
-		        GPIO_PORTB_DATA_R &= ~(PB2);       //b1=0
-		        GPIO_PORTB_DATA_R |= PB3;          //b0=1         binary output 1001
+			      GPIO_PORTA_DATA_R = 0x7B;
 		        break;
 		default :
-			GPIO_PORTA_DATA_R &= ~(PA6);       //b3=0
-		        GPIO_PORTA_DATA_R &= ~(PA7);       //b2=0
-		        GPIO_PORTB_DATA_R &= ~(PB2);       //b1=0
-		        GPIO_PORTB_DATA_R &= ~(PB3);       //b0=0         binary output 0000
-		        break;	
+			      GPIO_PORTA_DATA_R = 0x7E;
+		        break;		
 	}
-	switch(num1)
+	delay(79);
+	GPIO_PORTB_DATA_R &= 0XDF;
+	GPIO_PORTB_DATA_R |= 0XC0;
+	switch(ones)
 	{
 		case 1 :
-			GPIO_PORTA_DATA_R &= ~(PA2);      
-		        GPIO_PORTA_DATA_R &= ~(PA3);      
-		        GPIO_PORTA_DATA_R &= ~(PA4);      
-		        GPIO_PORTA_DATA_R |= PA5;         
+			      GPIO_PORTA_DATA_R = 0x30;
 		        break;
 		case 2 :
-			GPIO_PORTA_DATA_R &= ~(PA2);      
-		        GPIO_PORTA_DATA_R &= ~(PA3);      
-		        GPIO_PORTA_DATA_R |= PA4;         
-		        GPIO_PORTA_DATA_R &= ~(PA5);         
+			      GPIO_PORTA_DATA_R = 0x6D;
 		        break;
 		case 3 :
-			GPIO_PORTA_DATA_R &= ~(PA2);      
-		        GPIO_PORTA_DATA_R &= ~(PA3);      
-		        GPIO_PORTA_DATA_R |= PA4;         
-		        GPIO_PORTA_DATA_R |= PA5;         
+			      GPIO_PORTA_DATA_R = 0x79;
 		        break;
 		case 4 :
-			GPIO_PORTA_DATA_R &= ~(PA2);      
-		        GPIO_PORTA_DATA_R |=  PA3;        
-		        GPIO_PORTA_DATA_R &= ~(PA4);      
-		        GPIO_PORTA_DATA_R &= ~(PA5);      
+			      GPIO_PORTA_DATA_R = 0x33;
 		        break;
 		case 5 :
-			GPIO_PORTA_DATA_R &= ~(PA2);      
-		        GPIO_PORTA_DATA_R |=  PA3;        
-		        GPIO_PORTA_DATA_R &= ~(PA4);      
-		        GPIO_PORTA_DATA_R |=  PA5;        
+			      GPIO_PORTA_DATA_R = 0x5B;
 		        break;
 		case 6 :
-			GPIO_PORTA_DATA_R &= ~(PA2);      
-		        GPIO_PORTA_DATA_R |=  PA3;        
-		        GPIO_PORTA_DATA_R |= PA4;         
-		        GPIO_PORTA_DATA_R &= ~(PA5);      
+			      GPIO_PORTA_DATA_R = 0x5F;
 		        break;
 		case 7 :
-			GPIO_PORTA_DATA_R &= ~(PA2);      
-		        GPIO_PORTA_DATA_R |= PA3;         
-		        GPIO_PORTA_DATA_R |= PA4;         
-		        GPIO_PORTA_DATA_R |= PA5;         
+			      GPIO_PORTA_DATA_R = 0x70;
 		        break;
 		case 8 :
-			GPIO_PORTA_DATA_R |= PA2;         
-		        GPIO_PORTA_DATA_R &= ~(PA3);      
-		        GPIO_PORTA_DATA_R &= ~(PA4);      
-		        GPIO_PORTA_DATA_R &= ~(PA5);      
+			      GPIO_PORTA_DATA_R = 0x7F ;
 		        break;
 		case 9 :
-			GPIO_PORTA_DATA_R |= PA2;         
-		        GPIO_PORTA_DATA_R &= ~(PA3);      
-		        GPIO_PORTA_DATA_R &= ~(PA4);      
-		        GPIO_PORTA_DATA_R |= PA5;         
+			      GPIO_PORTA_DATA_R = 0x7B;
 		        break;
 		default :
-			GPIO_PORTA_DATA_R &= ~(PA2);      
-		        GPIO_PORTA_DATA_R &= ~(PA3);      
-		        GPIO_PORTA_DATA_R &= ~(PA4);      
-		        GPIO_PORTA_DATA_R &= ~(PA5);      
+			      GPIO_PORTA_DATA_R = 0x7E;
 		        break;	
 	}
+ }
 }
 
 int main(){
 	Sys_init();
 	while(1){
-		displayed_distance = (int) (totaldistance *1000); //converting from km to m
-		display(displayed_distance);
-			if(totaldistance>0.1) {
-				writeLED();
-			}else{
 				calc();
 				latHome = latDest;
 				lonHome = lonDest;
 				latDest+=0.000001;
 				lonDest+=0.000001;
-				totaldistance += distance;       //distance calculated is in km
-			}
+				totaldistance += distance;
+		if(totaldistance>0.1) {
+				writeLED();
+			displayed_distance = (int) (totaldistance *1000);
+	     ones = displayed_distance%10;
+	     displayed_distance /= 10;
+	     tens= displayed_distance%10;
+	     displayed_distance/=10;
+	     hundreds = displayed_distance%10;
+			display(hundreds,tens,ones);
+			
+			}  
+			
 	}
 }
