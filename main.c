@@ -41,6 +41,7 @@ double pi = 3.141592653589793;
 double R = 6371; //Radius of the Earth
 int displayed_distance =0 ;
 int ones,tens,hundreds=0;
+//--------------------------------------------------------------------------
 void calc()
 {
     latHomeTmp = (pi / 180) * (latHome);
