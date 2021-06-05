@@ -22,7 +22,7 @@ void Sys_init(){
 	GPIO_PORTA_DEN_R |= pinsA;					//Enable Digital output
 	GPIO_PORTA_AMSEL_R &= ~pinsA;			//Disable analog
 	GPIO_PORTA_AFSEL_R &= ~pinsA;			//Disable Alternate Function
-	GPIO_PORTA_PCTL_R &= ~0xFFFFFF00;				//PTCL GPIO on PFA
+	GPIO_PORTA_PCTL_R &= ~0xFFFFFF00;				//PTCL GPIO on PA
 	GPIO_PORTA_DATA_R &= ~pinsA;	
 	//***********************************************************************
 	SYSCTL_RCGCGPIO_R |= PB;							//Activate Port B Clock
@@ -31,7 +31,7 @@ void Sys_init(){
 	GPIO_PORTB_DEN_R |= 0xE0;					//Enable Digital output
 	GPIO_PORTB_AMSEL_R &= ~0xE0;			//Disable analog
 	GPIO_PORTB_AFSEL_R &= ~0xE0;			//Disable Alternate Function
-	GPIO_PORTB_PCTL_R &= ~0xFFF00000;				//PTCL GPIO on PFB
+	GPIO_PORTB_PCTL_R &= ~0xFFF00000;				//PTCL GPIO on PB7-5
 	GPIO_PORTB_DATA_R &= ~0xE0;
 }
 //Declare Variables
@@ -53,7 +53,8 @@ void calc()
     distance = R * c;
 }
 
-
+//************************************************************************************************************************************************************************
+//this function is for delaying between the enabling signals for the seven segment display
 void delay(int n){
 	int i,j;
 	for(i=0;i<n;i++){
@@ -64,10 +65,11 @@ void writeLED(){			//Write data on LEDs
 	GPIO_PORTF_DATA_R |= RED;
 }
 
-
+//************************************************************************************************************************************************************************
+//this function is for displaying the result on the seven segment display
 void display(int hundreds,int tens,int ones){
 	while(1){
-		GPIO_PORTB_DATA_R &= 0X7F;
+		GPIO_PORTB_DATA_R &= 0X7F;   //these two statements for enabling the signal for the hundreds and disabling it for the tens and ones
 		GPIO_PORTB_DATA_R |= 0X60;
 	switch(hundreds)
 	{
@@ -103,8 +105,8 @@ void display(int hundreds,int tens,int ones){
 			      GPIO_PORTA_DATA_R = 0x7E;
 		        break;	
 	}
-	delay(79);
-	GPIO_PORTB_DATA_R &= 0XBF;
+	delay(79);                    //between each enabling we make a delay so we can read the number
+	GPIO_PORTB_DATA_R &= 0XBF;    //these two statements for enabling the signal for the tens and disabling it for the hundreds and ones
 		GPIO_PORTB_DATA_R |= 0XA0;
 	switch(tens)
 	{
@@ -139,8 +141,8 @@ void display(int hundreds,int tens,int ones){
 			      GPIO_PORTA_DATA_R = 0x7E;
 		        break;		
 	}
-	delay(79);
-	GPIO_PORTB_DATA_R &= 0XDF;
+	delay(79);                          
+	GPIO_PORTB_DATA_R &= 0XDF;          //these two statements for enabling the signal for the ones and disabling it for the hundrends and tens
 	GPIO_PORTB_DATA_R |= 0XC0;
 	switch(ones)
 	{
@@ -190,7 +192,7 @@ int main(){
 		if(totaldistance>0.1) {
 				writeLED();
 			displayed_distance = (int) (totaldistance *1000);
-	     ones = displayed_distance%10;
+	     ones = displayed_distance%10;      //the following statements to get the hundreds and tens and ones from our result
 	     displayed_distance /= 10;
 	     tens= displayed_distance%10;
 	     displayed_distance/=10;
