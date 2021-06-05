@@ -230,6 +230,12 @@ __Vectors_Size  EQU     __Vectors_End - __Vectors
 
 Reset_Handler   PROC
                 EXPORT  Reset_Handler             [WEAK]
+                LDR   R0,  =0xE000ED88      //the following six statements are for dealing with floating point hardware
+				        LDR  R1,[R0]
+				        ORR    R1,R1,#(0xF << 20)
+				        STR R1,[R0]
+				        DSB
+				        ISB
                 IMPORT  __main
                 LDR     R0, =__main
                 BX      R0
