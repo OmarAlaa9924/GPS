@@ -60,7 +60,8 @@ void delay(int n){	//Delay Function
 	for(j=0;j<n;j++){}}
 }
 }
-void writeLED(){			//Write data on LEDs
+//------------------------------------------------------------------------------
+void writeLED(){	//Turn on Red LED
 	GPIO_PORTF_DATA_R &= ~PF123_mask;
 	GPIO_PORTF_DATA_R |= RED;
 }
