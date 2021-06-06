@@ -67,117 +67,39 @@ void writeLED(){	//Turn on Red LED
 }
 
 
+//Generating a function that consider all posible values(0-9) for 7 sigment output by setting mask for each digital output. 
+
+unsigned char mask(int num){ 
+	switch(num){
+		case 1 : return 0x30;		    
+		case 2 : return 0x6D;
+		case 3 : return 0x79;
+		case 4 : return 0x33;
+		case 5 : return 0x5B;
+		case 6 : return 0x5F;
+		case 7 : return 0x70;
+		case 8 : return 0x7F;
+		case 9 : return 0x7B;
+		default : return 0x7E;		
+	}
+}
+//Generating a function that displays the output calculated distance on 7 segment display
+
 void display(int hundreds,int tens,int ones){
 	while(1){
 		GPIO_PORTA_DATA_R &= 0X7F;
 		GPIO_PORTA_DATA_R |= 0X60;
-	switch(hundreds)
-	{
-		
-		case 1 :
-			      GPIO_PORTB_DATA_R = 0x30;
-		        break;
-		case 2 :
-			      GPIO_PORTB_DATA_R = 0x6D;
-		        break;
-		case 3 :
-			      GPIO_PORTB_DATA_R = 0x79;
-		        break;
-		case 4 :
-			      GPIO_PORTB_DATA_R = 0x33;
-		        break;
-		case 5 :
-			      GPIO_PORTB_DATA_R = 0x5B;
-		        break;
-		case 6 :
-			      GPIO_PORTB_DATA_R = 0x5F;
-		        break;
-		case 7 :
-			      GPIO_PORTB_DATA_R = 0x70;
-		        break;
-		case 8 :
-			      GPIO_PORTB_DATA_R = 0x7F ;
-		        break;
-		case 9 :
-			      GPIO_PORTB_DATA_R = 0x7B;
-		        break;
-		default :
-			      GPIO_PORTB_DATA_R = 0x7E;
-		        break;	
-	}
-	delay(500);
-	GPIO_PORTA_DATA_R &= 0XBF;
+		mask(hundreds); 
+		delay(500);
+		GPIO_PORTA_DATA_R &= 0XBF;
 		GPIO_PORTA_DATA_R |= 0XA0;
-	switch(tens)
-	{
-		case 1 :
-			      GPIO_PORTB_DATA_R = 0x30;
-		        break;
-		case 2 :
-			      GPIO_PORTB_DATA_R = 0x6D;
-		        break;
-		case 3 :
-			      GPIO_PORTB_DATA_R = 0x79;
-		        break;
-		case 4 :
-			      GPIO_PORTB_DATA_R = 0x33;
-		        break;
-		case 5 :
-			      GPIO_PORTB_DATA_R = 0x5B;
-		        break;
-		case 6 :
-			      GPIO_PORTB_DATA_R = 0x5F;
-		        break;
-		case 7 :
-			      GPIO_PORTB_DATA_R = 0x70;
-		        break;
-		case 8 :
-			      GPIO_PORTB_DATA_R = 0x7F ;
-		        break;
-		case 9 :
-			      GPIO_PORTB_DATA_R = 0x7B;
-		        break;
-		default :
-			      GPIO_PORTB_DATA_R = 0x7E;
-		        break;		
+		mask(tens);
+		delay(500);
+		GPIO_PORTA_DATA_R &= 0XDF;
+		GPIO_PORTA_DATA_R |= 0XC0;
+		mask(ones);
+		delay(500);
 	}
-	delay(500);
-	GPIO_PORTA_DATA_R &= 0XDF;
-	GPIO_PORTA_DATA_R |= 0XC0;
-	switch(ones)
-	{
-		case 1 :
-			      GPIO_PORTB_DATA_R = 0x30;
-		        break;
-		case 2 :
-			      GPIO_PORTB_DATA_R = 0x6D;
-		        break;
-		case 3 :
-			      GPIO_PORTB_DATA_R = 0x79;
-		        break;
-		case 4 :
-			      GPIO_PORTB_DATA_R = 0x33;
-		        break;
-		case 5 :
-			      GPIO_PORTB_DATA_R = 0x5B;
-		        break;
-		case 6 :
-			      GPIO_PORTB_DATA_R = 0x5F;
-		        break;
-		case 7 :
-			      GPIO_PORTB_DATA_R = 0x70;
-		        break;
-		case 8 :
-			      GPIO_PORTB_DATA_R = 0x7F ;
-		        break;
-		case 9 :
-			      GPIO_PORTB_DATA_R = 0x7B;
-		        break;
-		default :
-			      GPIO_PORTB_DATA_R = 0x7E;
-		        break;	
-	}
- }
 }
 
 int main(){
