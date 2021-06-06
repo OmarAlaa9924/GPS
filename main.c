@@ -76,7 +76,15 @@ void writeLED(){	//Turn on Red LED
 	GPIO_PORTF_DATA_R &= ~PF123_mask;
 	GPIO_PORTF_DATA_R |= RED;
 }
-
+//-------------------------------------------------------------------------------
+void split_displayed_num(){ //Splits number to hundreds, tens and ones
+	displayed_distance = (int) (totaldistance *1000);
+	ones = displayed_distance%10;
+        displayed_distance /= 10;
+	tens= displayed_distance%10;
+	displayed_distance/=10;
+        hundreds = displayed_distance%10;
+}
 //Generating a function that consider all posible values(0-9) for 7 sigment output by setting mask for each digital output. 
 
 unsigned char mask(int num){ 
