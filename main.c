@@ -1,39 +1,42 @@
 #include "TM4C123GH6PM.h"
 #include <math.h>
 
+
+
+
 //Initialization function
 void Sys_init(){
 	//PORTF
-	SYSCTL_RCGCGPIO_R |= 0x20;				//Activate Port F Clock
-	while((SYSCTL_RCGCGPIO_R&0x20)==0);			//Wait for activation
-	GPIO_PORTF_LOCK_R = GPIO_LOCK_KEY;			//Unlock Port F
-	GPIO_PORTF_CR_R |= PF123_mask;				//Allow changes to PF3-1
-	GPIO_PORTF_DIR_R |= PF123_mask;				//Set I/O
-	GPIO_PORTF_DEN_R |= PF123_mask;				//Enable Digital output
-	GPIO_PORTF_AMSEL_R &= ~PF123_mask;			//Disable analog
-	GPIO_PORTF_AFSEL_R &= ~PF123_mask;			//Disable Alternate Function
-	GPIO_PORTF_PCTL_R &= ~0x0000FFF0;			//PTCL GPIO on PF3-1
-	GPIO_PORTF_DATA_R &= ~PF123_mask;			//Init LEDs to be off
+	SYSCTL_RCGCGPIO_R |= 0x20;			//Activate Port F Clock
+	while((SYSCTL_RCGCGPIO_R&0x20)==0);		//Wait for activation
+	GPIO_PORTF_LOCK_R = GPIO_LOCK_KEY;		//Unlock Port F
+	GPIO_PORTF_CR_R |= PF123_mask;			//unlock used pins
+        GPIO_PORTF_DIR_R |= PF123_mask;			//Set I/O
+	GPIO_PORTF_DEN_R |= PF123_mask;			//Enable Digital output
+	GPIO_PORTF_AMSEL_R &= ~PF123_mask;		//Disable analog
+	GPIO_PORTF_AFSEL_R &= ~PF123_mask;		//Disable Alternate Function
+	GPIO_PORTF_PCTL_R &= ~0x0000FFF0;		//PTCL GPIO on PF3-1
+	GPIO_PORTF_DATA_R &= ~PF123_mask;		//Init LEDs to be off
 	//***********************************************************************
-	//PORTA
-	SYSCTL_RCGCGPIO_R |= PA;				//Activate Port A Clock
-	while((SYSCTL_RCGCGPIO_R&0x01)==0){};			//Wait for activation
-	GPIO_PORTA_DIR_R |= pinsA;				//Set I/O
-	GPIO_PORTA_DEN_R |= pinsA;				//Enable Digital output
-	GPIO_PORTA_AMSEL_R &= ~pinsA;				//Disable analog
-	GPIO_PORTA_AFSEL_R &= ~pinsA;				//Disable Alternate Function
-	GPIO_PORTA_PCTL_R &= ~0xFFFFFF00;			//PTCL GPIO on PA
-	GPIO_PORTA_DATA_R &= ~pinsA;	
+        //PORTA
+	SYSCTL_RCGCGPIO_R |= PA;			//Activate Port A Clock
+	while((SYSCTL_RCGCGPIO_R&0x01)==0){};		//Wait for activation
+        GPIO_PORTA_DIR_R |= 0xE0;			//Set I/O
+	GPIO_PORTA_DEN_R |= 0xE0;			//Enable Digital output
+	GPIO_PORTA_AMSEL_R &= ~0xE0;			//Disable analog
+	GPIO_PORTA_AFSEL_R &= ~0xE0;			//Disable Alternate Function
+	GPIO_PORTA_PCTL_R &= ~0xFFF00000;		//PTCL GPIO on PA
+	GPIO_PORTA_DATA_R &= ~0xE0;	
 	//***********************************************************************
 	//PORTB
-	SYSCTL_RCGCGPIO_R |= PB;				//Activate Port B Clock
-	while((SYSCTL_RCGCGPIO_R&0x02)==0){};			//Wait for activation		
-	GPIO_PORTB_DIR_R |= 0xE0;		  		//Set I/O
-	GPIO_PORTB_DEN_R |= 0xE0;				//Enable Digital output
-	GPIO_PORTB_AMSEL_R &= ~0xE0;				//Disable analog
-	GPIO_PORTB_AFSEL_R &= ~0xE0;				//Disable Alternate Function
-	GPIO_PORTB_PCTL_R &= ~0xFFF00000;			//PTCL GPIO on PB
-	GPIO_PORTB_DATA_R &= ~0xE0;
+	SYSCTL_RCGCGPIO_R |= PB;		        //Activate Port B Clock
+	while((SYSCTL_RCGCGPIO_R&0x02)==0){};		//Wait for activation		
+        GPIO_PORTB_DIR_R |= pinsB;		        //Set I/O
+	GPIO_PORTB_DEN_R |= pinsB;		        //Enable Digital output
+	GPIO_PORTB_AMSEL_R &= ~pinsB;			//Disable analog
+	GPIO_PORTB_AFSEL_R &= ~ pinsB;			//Disable Alternate Function
+	GPIO_PORTB_PCTL_R &= ~0xFFFFFFFF;		//PTCL GPIO on PB
+	GPIO_PORTB_DATA_R &= ~pinsB;
 }
 //-------------------------------------------------------------------------
 //Declare Variables
