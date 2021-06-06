@@ -42,7 +42,7 @@ double R = 6371; //Radius of the Earth
 int displayed_distance =0 ;
 int ones,tens,hundreds=0;
 //--------------------------------------------------------------------------
-void calc()
+void calc() //Calculates distance between two coordinates
 {
     latHomeTmp = (pi / 180) * (latHome);
     latDestTmp = (pi / 180) * (latDest);
@@ -53,6 +53,13 @@ void calc()
         sin(differenceLon / 2.) * sin(differenceLon / 2.);
     c = 2 * atan2(sqrt(a), sqrt(1 - a));
     distance = R * c;
+}
+//-----------------------------------------------------------------------------
+void update_coordinates(){
+	latHome = latDest;
+	lonHome = lonDest;
+	latDest+=0.0005;
+	lonDest+=0.0005;	
 }
 void delay(int n){	//Delay Function
 	int i,j;
@@ -65,7 +72,6 @@ void writeLED(){	//Turn on Red LED
 	GPIO_PORTF_DATA_R &= ~PF123_mask;
 	GPIO_PORTF_DATA_R |= RED;
 }
-
 
 //Generating a function that consider all posible values(0-9) for 7 sigment output by setting mask for each digital output. 
 
