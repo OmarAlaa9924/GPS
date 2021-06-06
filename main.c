@@ -99,40 +99,30 @@ void display(int hundreds,int tens,int ones){
 	while(1){
 		GPIO_PORTA_DATA_R &= 0X7F;
 		GPIO_PORTA_DATA_R |= 0X60;
-		mask(hundreds); 
-		delay(500);
+		GPIO_PORTB_DATA_R = mask(hundreds); 
+		delay(100);
 		GPIO_PORTA_DATA_R &= 0XBF;
 		GPIO_PORTA_DATA_R |= 0XA0;
-		mask(tens);
-		delay(500);
+		GPIO_PORTB_DATA_R = mask(tens);
+		delay(100);
 		GPIO_PORTA_DATA_R &= 0XDF;
 		GPIO_PORTA_DATA_R |= 0XC0;
-		mask(ones);
-		delay(500);
+		GPIO_PORTB_DATA_R = mask(ones);
+		delay(100);
 	}
 }
 
+//----------------------------------------------------------------------
 int main(){
 	Sys_init();
 	while(1){
-				calc();
-				latHome = latDest;
-				lonHome = lonDest;
-				latDest+=0.000001;
-				lonDest+=0.000001;
-				totaldistance += distance;
+		calc();
+		update_coordinates();	
+		totaldistance += distance;
 		if(totaldistance>0.1) {
-				writeLED();
-			displayed_distance = (int) (totaldistance *1000);
-	     ones = displayed_distance%10;
-	     displayed_distance /= 10;
-	     tens= displayed_distance%10;
-	     displayed_distance/=10;
-	     hundreds = displayed_distance%10;
-			display(hundreds,tens,ones);
-			
-			}  
-			
+			writeLED();
+			split_displayed_num();
+			display(hundreds,tens,ones);			
+		}  			
 	}
-
 }
