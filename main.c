@@ -1,6 +1,4 @@
-#include "TM4C123GH6PM.h"
-#include <math.h>
-
+#include <stdint.h>
 
 
 
@@ -37,7 +35,23 @@ void Sys_init(){
 	GPIO_PORTB_AFSEL_R &= ~ pinsB;			//Disable Alternate Function
 	GPIO_PORTB_PCTL_R &= ~0xFFFFFFFF;		//PTCL GPIO on PB
 	GPIO_PORTB_DATA_R &= ~pinsB;
-}
+	//***********************************************************************
+	//UART
+ SYSCTL_RCGCUART_R |= SYSCTL_RCGCUART_R1;
+ SYSCTL_RCGCGPIO_R |= SYSCTL_RCGCGPIO_R2;
+
+UART0_CTL_R &= ~ UART_CTL_UARTEN;
+UART0_IBRD_R = 104;	
+UART0_FBRD_R = 11;
+UART0_LCRH_R |= (UART_LCRH_WLEN_8 | UART_LCRH_FEN)	;
+UART0_CTL_R = (UART_CTL_RXE | UART_CTL_TXE | UART_CTL_UARTEN);
+	
+GPIO_PORTA_AFSEL_R |= 0x30;
+GPIO_PORTA_PCTL_R = (GPIO_PORTA_PCTL_R &= ~0x00FF0000)|(GPIO_PCTL_PC5_U1TX|GPIO_PCTL_PC4_U1RX);
+GPIO_PORTA_DEN_R |= 0x30;
+GPIO_PORTA_AMSEL_R &= ~0x30;	
+}	
+
 //-------------------------------------------------------------------------
 //Declare Variables
 double totaldistance, distance,latHome, lonHome, latDest, lonDest,differenceLon, differenceLat, a, c, latHomeTmp, latDestTmp, t = 0;
@@ -57,6 +71,19 @@ void calc() //Calculates distance between two coordinates
         sin(differenceLon / 2.) * sin(differenceLon / 2.);
     c = 2 * atan2(sqrt(a), sqrt(1 - a));
     distance = R * c;
+}
+//-----------------------------------------------------------------------------
+uint8_t UART1_Available(){
+	return ((UART1_FR_R &UART_FR_RXFE)==UART_FR_RXFE)? 0:1;
+}
+char UART0_read(){
+	 while(UART1_Available() !=1){};
+		return (char) (UART1_DR_R & 0xFF);
+		}
+
+void UART1_write(char data){
+	while((UART1_FR_R & UART_FR_TXFF)==UART_FR_TXFF){};
+		UART1_DR_R = data;
 }
 //-----------------------------------------------------------------------------
 void update_coordinates(){
