@@ -142,3 +142,40 @@ void Extract(float coordinates[])
 		coordinates[0]=latreal;
 		coordinates[1]=lonreal;
 }
+
+float dist_calc(float latHome,float lonHome,float latDest,float lonDest){
+	// Haver Sine formula used to calculate the distance
+	float differenceLat = (latDest-latHome)* PI/180.0;
+	float differenceLon = (lonDest-lonHome)* PI/180.0;
+	
+
+	latHome = (latHome)* PI/180.0;
+	latDest = (latDest)* PI/180.0;
+	
+
+	float a = pow(sin(differenceLat/ 2), 2) + pow(sin(differenceLon / 2), 2) * cos(latHome) * cos(latDest);
+	float r = 6371, c = 2 * asin(sqrt(a)); // r is the Radius of Earth
+	return r * c * 1000;
+}
+
+float distance_total (float latHome, float lonHome, float latDest, float lonDest)
+{ // used to accumlate the distance to get the total
+	float Total=0;
+	if(lonHome!=0 && latHome !=0){ 
+		Total = dist_calc(latHome,lonHome,latDest,lonDest);
+	}
+	return Total;
+}
+
+void delay(int n)
+{
+	int i;
+	int j;
+	for(i=0 ; i<n ; i++)
+	{
+		for(j=0; j<3180; j++)
+		{
+			
+		}
+	}
+}
